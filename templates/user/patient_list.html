@@ -1,0 +1,16 @@
+<!-- templates/patient_list.html -->
+{% extends 'user/index.html' %}
+
+{% block title %}Liste des Patients{% endblock %}
+
+{% block content %}
+<h2>Liste des Patients</h2>
+<ul>
+    {% for patient in object_list %}
+    <li><a href="{% url 'patient_detail' patient.pk %}">{{ patient.user.get_full_name }}</a></li>
+    {% empty %}
+    <li>Aucun patient trouvé.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'patient_create' %}">Ajouter un Patient</a>
+{% endblock %}

@@ -1,0 +1,44 @@
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+  <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets/css/plugins.min.css' %}" />
+  <link rel="stylesheet" href="{% static 'assets/css/kaiadmin.min.css' %}" />
+
+
+{% block content %}
+<div class="container mt-4 p-4">
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+<div class="row"><center><h1>Système de Gestion des Urgences -SGU-</h1></center></div>
+    <div class="row">
+        <div class="col-8 container">
+            <div class="card card-round">
+                <div class="card-header">
+                    <div class="card-head-row">
+                        <div class="card-title">Connexion</div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.media }}
+                        {{ form|crispy }}
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary">Se connecter</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+<!-- templates/diagnosis_detail.html -->
+{% extends 'user/index.html' %}
+
+{% block title %}Détail Diagnostic{% endblock %}
+
+{% block content %}
+<h2>Détail Diagnostic</h2>
+<p><strong>Patient :</strong> {{ object.patient.user.get_full_name }}</p>
+<p><strong>Médecin :</strong> {{ object.doctor.user.get_full_name }}</p>
+<p><strong>Date :</strong> {{ object.date }}</p>
+<p><strong>Description :</strong></p>
+<div>{{ object.description|safe }}</div>
+<p><strong>Traitement prescrit :</strong></p>
+<div>{{ object.prescribed_treatment|safe }}</div>
+<a href="{% url 'diagnosis_update' object.pk %}">Modifier</a>
+<a href="{% url 'diagnosis_list' %}">Retour à la liste</a>
+{% endblock %}

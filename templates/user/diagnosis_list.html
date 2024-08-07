@@ -1,0 +1,16 @@
+<!-- templates/diagnosis_list.html -->
+{% extends 'user/index.html' %}
+
+{% block title %}Liste des Diagnostics{% endblock %}
+
+{% block content %}
+<h2>Liste des Diagnostics</h2>
+<ul>
+    {% for diagnosis in object_list %}
+    <li><a href="{% url 'diagnosis_detail' diagnosis.pk %}">Diagnostic pour {{ diagnosis.patient.user.get_full_name }}</a></li>
+    {% empty %}
+    <li>Aucun diagnostic trouvé.</li>
+    {% endfor %}
+</ul>
+<a href="{% url 'diagnosis_create' %}">Ajouter un Diagnostic</a>
+{% endblock %}

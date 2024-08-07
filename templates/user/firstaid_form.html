@@ -1,0 +1,13 @@
+<!-- templates/firstaid_form.html -->
+{% extends 'user/index.html' %}
+
+{% block title %}Créer/Modifier Premiers Secours{% endblock %}
+
+{% block content %}
+<h2>{% if form.instance.pk %}Modifier{% else %}Créer{% endif %} Premiers Secours</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Enregistrer</button>
+</form>
+{% endblock %}

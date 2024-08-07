@@ -1,0 +1,14 @@
+<!-- templates/firstaid_detail.html -->
+{% extends 'user/index.html' %}
+
+{% block title %}Détail Premiers Secours{% endblock %}
+
+{% block content %}
+<h2>Détail Premiers Secours</h2>
+<p><strong>Titre :</strong> {{ object.title }}</p>
+<p><strong>Description :</strong></p>
+<div>{{ object.description|safe }}</div>
+<p><strong>Source :</strong> <a href="{{ object.source }}" target="_blank">Voir la source</a></p>
+<a href="{% url 'firstaid_update' object.pk %}">Modifier</a>
+<a href="{% url 'firstaid_list' %}">Retour à la liste</a>
+{% endblock %}
