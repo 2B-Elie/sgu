@@ -29,7 +29,9 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['*','34.72.124.62']
+
+CSRF_TRUSTED_ORIGINS = ['https://heptou.com','https://www.heptou.com']
 
 
 # Application definition
