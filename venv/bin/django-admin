@@ -1,4 +1,4 @@
-#!/home/korima/DevApp/App/venv/bin/python3
+#!/home/korima/DevApp/App/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

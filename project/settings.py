@@ -126,8 +126,10 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LOGIN_REDIRECT_URL = 'home'  # Change to your home view name
+LOGIN_REDIRECT_URL = 'home' 
 LOGOUT_REDIRECT_URL = 'login'
+
+
 
 
 # Internationalization

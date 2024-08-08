@@ -3,7 +3,7 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 
 from .views import (
-    HomeView,SignUpView,SignInView,
+    HomeView,SignUpView,SignInView, custom_logout_view,
     PatientCreateView, PatientUpdateView, PatientDetailView, PatientListView,
     DoctorCreateView, DoctorUpdateView, DoctorDetailView, DoctorListView,
     DiagnosisCreateView, DiagnosisUpdateView, DiagnosisDetailView, DiagnosisListView,
@@ -14,7 +14,7 @@ urlpatterns = [
 
     path('signup/', SignUpView.as_view(), name='signup'),
     path('accounts/login/', SignInView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('logout/', custom_logout_view, name='logout'),
 
     path('', HomeView.as_view(), name='home'),
 

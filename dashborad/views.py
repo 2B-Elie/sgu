@@ -1,12 +1,15 @@
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView, DetailView, ListView, TemplateView
-from .models import Patient, Doctor, Diagnosis, FirstAid
+from .models import Patient, Doctor, Diagnosis, FirstAid, Profile
 from .forms import PatientForm, DoctorForm, DiagnosisForm, FirstAidForm, SignUpForm, SignInForm
 from django.views import View
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404
+from django.contrib.auth import logout
+
 
 class SignUpView(View):
     form_class = SignUpForm
@@ -25,7 +28,20 @@ class SignUpView(View):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
-            return redirect('home')  # Change to your home view
+            
+            try:
+                profile = user.profile
+                if profile.user_type == 'patient':
+                    # Assurez-vous que le patient est bien créé
+                    patient = Patient.objects.get(profile=profile)
+                    return redirect('patient_update', pk=patient.id)  # Redirige vers la page de mise à jour du patient
+                elif profile.user_type == 'doctor':
+                    # Assurez-vous que le médecin est bien créé
+                    doctor = Doctor.objects.get(profile=profile)
+                    return redirect('doctor_update', pk=doctor.id)  # Redirige vers la page de mise à jour du médecin
+            except (Patient.DoesNotExist, Doctor.DoesNotExist):
+                # Gérer le cas où le profil n'est pas encore associé à un patient ou médecin
+                return redirect('home')  # Redirection vers une page d'accueil ou une autre page pertinente
 
         return render(request, self.template_name, {'form': form})
 
@@ -33,17 +49,12 @@ class SignInView(LoginView):
     form_class = SignInForm
     template_name = 'registration/login.html'
 
-
+def custom_logout_view(request):
+    logout(request)
+    return redirect('login')
 
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'user/index.html'
-    
-    # # Méthode pour ajouter ou modifier le contexte
-    # def get_context_data(self, **kwargs):
-    #     context = super().get_context_data(**kwargs)
-    #     context['site_name'] = 'HEPTOU'
-    #     context['welcome_message'] = 'Welcome to our home page!'
-    #     return context
 
 # Vues pour Patient
 class PatientCreateView(CreateView):
@@ -51,6 +62,11 @@ class PatientCreateView(CreateView):
     form_class = PatientForm
     template_name = 'user/patient_form.html'
     success_url = reverse_lazy('patient_list')
+
+    def form_valid(self, form):
+        profile = get_object_or_404(Profile, user=self.request.user)
+        form.instance.profile = profile
+        return super().form_valid(form)
 
 class PatientUpdateView(UpdateView):
     model = Patient
@@ -127,4 +143,4 @@ class FirstAidDetailView(DetailView):
 
 class FirstAidListView(ListView):
     model = FirstAid
-    template_name = 'firstaid_list.html'
+    template_name = 'user/firstaid_list.html'
