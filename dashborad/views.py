@@ -34,11 +34,11 @@ class SignUpView(View):
                 if profile.user_type == 'patient':
                     # Assurez-vous que le patient est bien créé
                     patient = Patient.objects.get(profile=profile)
-                    return redirect('patient_update', pk=patient.id)  # Redirige vers la page de mise à jour du patient
+                    return redirect('home')  # Redirige vers la page de mise à jour du patient
                 elif profile.user_type == 'doctor':
                     # Assurez-vous que le médecin est bien créé
                     doctor = Doctor.objects.get(profile=profile)
-                    return redirect('doctor_update', pk=doctor.id)  # Redirige vers la page de mise à jour du médecin
+                    return redirect('home')  # Redirige vers la page de mise à jour du médecin
             except (Patient.DoesNotExist, Doctor.DoesNotExist):
                 # Gérer le cas où le profil n'est pas encore associé à un patient ou médecin
                 return redirect('home')  # Redirection vers une page d'accueil ou une autre page pertinente
@@ -55,6 +55,11 @@ def custom_logout_view(request):
 
 class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'user/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.request.user.profile
+        return context
 
 # Vues pour Patient
 class PatientCreateView(CreateView):
