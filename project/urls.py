@@ -10,7 +10,8 @@ admin.site.site_title = "SGU Admin"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-     path('', include('dashborad.urls')), 
+    path('', include('dashborad.urls')), 
+    path('ckeditor/', include('ckeditor_uploader.urls')),  # Ajout de l'URL pour CKEditor
 ]
 
 if settings.DEBUG:
