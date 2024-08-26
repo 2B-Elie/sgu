@@ -68,11 +68,28 @@
           <ul class="nav nav-secondary">
             <li class="nav-item active">
               <a data-bs-toggle="collapse" href="#dashboard" class="collapsed" aria-expanded="false">
-                  <a href="{% url 'home' %}">
-                      <p><i class="fas fa-home"></i>Dashboard</p>
+              {% if user.is_authenticated %}
+                {% if is_medecin %}
+                  <a href="{% url 'medecin_dashboard' %}">
+                    <p><i class="fas fa-home"></i>Dashboard</p>
                   </a>
-                <span class="caret"></span>
-              </a>
+                {% elif is_patient %}
+                  <a href="{% url 'patient_dashboard' %}">
+                    <p><i class="fas fa-home"></i>Dashboard</p>
+                  </a>
+                {% else %}
+                  <a href="{% url 'home' %}">
+                    <p><i class="fas fa-home"></i>Dashboard</p>
+                  </a>
+                {% endif %}
+              {% else %}
+                <a href="{% url 'home' %}">
+                  <p><i class="fas fa-home"></i>Dashboard</p>
+                </a>
+              {% endif %}
+              <span class="caret"></span>
+            </a>
+
             </li>
             <li class="nav-section">
               <span class="sidebar-mini-icon">
@@ -89,13 +106,8 @@
               <div class="collapse" id="base">
                 <ul class="nav nav-collapse">
                   <li>
-                    <a href="#">
+                    <a href="{% url 'profile_update' %}">
                       <span class="sub-item">Mon Pofil</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#">
-                      <span class="sub-item">Mon Dossier Médical</span>
                     </a>
                   </li>
                   <li>
@@ -106,6 +118,7 @@
                 </ul>
               </div>
             </li>
+            {% comment %}
              {% if profile.user_type == 'patient' %}
             <li class="nav-item">
               <a data-bs-toggle="collapse" href="#sidebarLayouts">
@@ -116,7 +129,7 @@
               <div class="collapse" id="sidebarLayouts">
                 <ul class="nav nav-collapse">
                   <li>
-                    <a href="{% url 'firstaid_list' %}">
+                    <a href="{% url 'home' %}">
                       <span class="sub-item">Vidéos de Premiers Secours</span>
                     </a>
                   </li>
@@ -138,7 +151,7 @@
               <div class="collapse" id="sidebarLayouts">
                 <ul class="nav nav-collapse">
                   <li>
-                    <a href="{% url 'firstaid_create' %}">
+                    <a href="{% url 'home' %}">
                       <span class="sub-item">Guides de Premiers Secours</span>
                     </a>
                   </li>
@@ -155,7 +168,7 @@
               <div class="collapse" id="sidebarLayouts">
                 <ul class="nav nav-collapse">
                   <li>
-                    <a href="{% url 'firstaid_create' %}">
+                    <a href="{% url 'home' %}">
                       <span class="sub-item">Guides de Premiers Secours</span>
                     </a>
                   </li>
@@ -163,7 +176,7 @@
               </div>
             </li> 
             {% endif %}
-            {% comment %} <li class="nav-item">
+            <li class="nav-item">
               <a data-bs-toggle="collapse" href="#forms">
                 <i class="fas fa-pen-square"></i>
                 <p>Forms</p>

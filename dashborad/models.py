@@ -1,85 +1,108 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from ckeditor.fields import RichTextField
-from django.core.validators import URLValidator
+from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
+from ckeditor.fields import RichTextField
 
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
-
-class Profile(models.Model):
-    USER_TYPE_CHOICES = [
-        ('patient', 'Patient'),
-        ('doctor', 'Médecin'),
-    ]
-    GENDER_CHOICES = [
-        ('male', 'Homme'),
-        ('female', 'Femme'),
-        ('other', 'Autre'),
-        ('prefer_not_to_say', 'Préférer ne pas dire'),
-    ]
-    
+class Medecin(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    user_type = models.CharField(max_length=10, choices=USER_TYPE_CHOICES, default='patient')
-    gender = models.CharField(max_length=20, choices=GENDER_CHOICES, blank=True, null=True, verbose_name=_("Sexe"))
-
-    class Meta:
-        verbose_name = _("Profil")
-        verbose_name_plural = _("Profils")
+    specialty = models.CharField(
+        max_length=255, 
+        verbose_name=_("Spécialité"),
+        help_text=_("Entrez la spécialité médicale du médecin, par exemple : Cardiologue, Dermatologue, etc.")
+    )
+    hospital_affiliation = models.CharField(
+        max_length=255, 
+        verbose_name=_("Affiliation Hospitalière"),
+        blank=True, 
+        null=True,
+        help_text=_("Nom de l'hôpital ou de la clinique où le médecin est affilié.")
+    )
+    license_number = models.CharField(
+        max_length=255, 
+        verbose_name=_("Numéro de Licence"),
+        help_text=_("Entrez le numéro de licence professionnelle du médecin.")
+    )
+    contact_number = models.CharField(
+        max_length=20,  # Augmenté pour tenir compte des formats internationaux
+        verbose_name=_("Numéro de Contact"),
+        blank=True, 
+        null=True,
+        help_text=_("Numéro de téléphone ou de contact professionnel du médecin.")
+    )
+    profil_complet = models.BooleanField(default=False, verbose_name=_("Profil complet"))
 
     def __str__(self):
-        return f"Profil de {self.user.username}"
+        return f"Dr. {self.user.username} - {self.specialty}"
 
 class Patient(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, limit_choices_to={'user_type': 'patient'}, verbose_name=_("Profil"))
-    date_of_birth = models.DateField(verbose_name=_("Date de naissance"), help_text=_("La date de naissance du patient"))
-    emergency_contact = models.CharField(max_length=100, verbose_name=_("Contact d'urgence"), help_text=_("Personne à contacter en cas d'urgence"))
-    medical_history = models.TextField(blank=True, null=True, verbose_name=_("Antécédents médicaux"), help_text=_("Historique médical du patient"))
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    birth_date = models.DateField(
+        verbose_name=_("Date de Naissance"),
+        help_text=_("Entrez la date de naissance du patient."),
+        blank=True, 
+        null=True,
 
-    class Meta:
-        verbose_name = _("Patient")
-        verbose_name_plural = _("Patients")
-
-    def __str__(self):
-        return f"{self.profile.user.first_name} {self.profile.user.last_name}"
-
-class Doctor(models.Model):
-    profile = models.OneToOneField(Profile, on_delete=models.CASCADE, limit_choices_to={'user_type': 'doctor'}, verbose_name=_("Profil"))
-    specialty = models.CharField(max_length=100, verbose_name=_("Spécialité"), help_text=_("Spécialité du médecin"))
-
-    class Meta:
-        verbose_name = _("Médecin")
-        verbose_name_plural = _("Médecins")
-
-    def __str__(self):
-        return f"Dr. {self.profile.user.first_name} {self.profile.user.last_name} - {self.specialty}"
-
-class Diagnosis(models.Model):
-    patient = models.ForeignKey(Patient, on_delete=models.CASCADE, related_name='diagnoses', verbose_name=_("Patient"))
-    doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE, verbose_name=_("Médecin"))
-    date = models.DateField(auto_now_add=True, verbose_name=_("Date"), help_text=_("Date du diagnostic"))
-    description = RichTextField(verbose_name=_("Description"), help_text=_("Description du diagnostic"))
-    prescribed_treatment = RichTextField(verbose_name=_("Traitement prescrit"), help_text=_("Traitement prescrit au patient"))
-
-    class Meta:
-        verbose_name = _("Diagnostic")
-        verbose_name_plural = _("Diagnostics")
-        indexes = [
-            models.Index(fields=['date']),
-        ]
+    )
+    medical_history = models.TextField(
+        verbose_name=_("Historique Médical"),
+        blank=True, 
+        null=True,
+        help_text=_("Entrez un résumé des antécédents médicaux du patient, y compris les maladies chroniques, les opérations, etc.")
+    )
+    emergency_contact_name = models.CharField(
+        max_length=255, 
+        verbose_name=_("Nom du Contact d'Urgence"),
+        help_text=_("Entrez le nom de la personne à contacter en cas d'urgence.")
+    )
+    emergency_contact_phone = models.CharField(
+        max_length=20,  # Augmenté pour tenir compte des formats internationaux
+        verbose_name=_("Numéro du Contact d'Urgence"),
+        help_text=_("Entrez le numéro de téléphone de la personne à contacter en cas d'urgence.")
+    )
+    chronic_conditions = models.CharField(
+        max_length=255, 
+        verbose_name=_("Conditions Chroniques"),
+        blank=True, 
+        null=True,
+        help_text=_("Entrez les conditions médicales chroniques du patient, par exemple : Diabète, Hypertension, etc.")
+    )
+    profil_complet = models.BooleanField(default=False, verbose_name=_("Profil complet"))
 
     def __str__(self):
-        return f"Diagnostic pour {self.patient} par {self.doctor} le {self.date}"
+        return self.user.username
 
-class FirstAid(models.Model):
-    title = models.CharField(max_length=100, verbose_name=_("Titre"), help_text=_("Titre de l'assistance de premiers secours"))
-    description = RichTextField(verbose_name=_("Description"), help_text=_("Description des premiers secours"))
-    source = models.URLField(validators=[URLValidator()], verbose_name=_("Source"), help_text=_("Lien vidéo expliquant les étapes des premiers secours"))
-
-    class Meta:
-        verbose_name = _("Premiers Secours")
-        verbose_name_plural = _("Premiers Secours")
+class Route(models.Model):
+    title = models.CharField(
+        max_length=255,
+        verbose_name=_("Titre"),
+        help_text=_("Titre de la route de premiers secours.")
+    )
+    description = RichTextField(
+        verbose_name=_("Description"),
+        help_text=_("Description détaillée de la route de premiers secours.")
+    )
+    steps = RichTextField(
+        verbose_name=_("Étapes"),
+        help_text=_("Étapes à suivre pour fournir les premiers secours.")
+    )
 
     def __str__(self):
-        return f"Premiers Secours: {self.title}"
+        return self.title
+
+class Domicile(models.Model):
+    symptom = models.CharField(
+        max_length=255,
+        verbose_name=_("Symptôme"),
+        help_text=_("Symptôme observé qui nécessite une assistance à domicile.")
+    )
+    explanation = RichTextField(
+        verbose_name=_("Explication"),
+        help_text=_("Explication du symptôme et des raisons possibles.")
+    )
+    assistance_method = RichTextField(
+        verbose_name=_("Méthode d'assistance"),
+        help_text=_("Méthode ou procédure pour assister la personne à domicile.")
+    )
+
+    def __str__(self):
+        return self.symptom

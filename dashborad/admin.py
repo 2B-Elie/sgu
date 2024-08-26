@@ -1,63 +1,53 @@
 from django.contrib import admin
-from .models import Patient, Doctor, Diagnosis, FirstAid, Profile
+from .models import Medecin, Patient, Route, Domicile
 from ckeditor.widgets import CKEditorWidget
-from django.db import models
+from django import forms
 
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'user_type', 'gender')
-    search_fields = ('user__username', 'user__email')
-    list_filter = ('user_type', 'gender')
-    
+class MedecinAdminForm(forms.ModelForm):
+    class Meta:
+        model = Medecin
+        fields = '__all__'
+
+class PatientAdminForm(forms.ModelForm):
+    medical_history = forms.CharField(widget=CKEditorWidget())
+
+    class Meta:
+        model = Patient
+        fields = '__all__'
+
+@admin.register(Medecin)
+class MedecinAdmin(admin.ModelAdmin):
+    form = MedecinAdminForm
+    list_display = ('user', 'specialty', 'contact_number', 'profil_complet')
+    search_fields = ('user__username', 'specialty', 'license_number')
+    list_filter = ('profil_complet',)
+
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'date_of_birth', 'emergency_contact')
-    list_filter = ('date_of_birth',)
+    form = PatientAdminForm
+    list_display = ('user', 'birth_date', 'emergency_contact_name', 'emergency_contact_phone', 'profil_complet')
+    search_fields = ('user__username', 'emergency_contact_name')
+    list_filter = ('profil_complet',)
+@admin.register(Route)
+class RouteAdmin(admin.ModelAdmin):
+    list_display = ('title',)
+    search_fields = ('title',)
+    list_filter = ('title',)
+    ordering = ('title',)
     fieldsets = (
         (None, {
-            'fields': ('profile', 'date_of_birth', 'emergency_contact', 'medical_history')
+            'fields': ('title', 'description', 'steps')
         }),
     )
 
-    formfield_overrides = {
-        models.TextField: {'widget': CKEditorWidget()},
-    }
-
-@admin.register(Doctor)
-class DoctorAdmin(admin.ModelAdmin):
-    list_display = ('profile', 'specialty')
-    list_filter = ('specialty',)
+@admin.register(Domicile)
+class DomicileAdmin(admin.ModelAdmin):
+    list_display = ('symptom',)
+    search_fields = ('symptom',)
+    list_filter = ('symptom',)
+    ordering = ('symptom',)
     fieldsets = (
         (None, {
-            'fields': ('profile', 'specialty')
+            'fields': ('symptom', 'explanation', 'assistance_method')
         }),
     )
-
-@admin.register(Diagnosis)
-class DiagnosisAdmin(admin.ModelAdmin):
-    list_display = ('patient', 'doctor', 'date', 'description')
-    search_fields = ('patient__profile__user__username', 'doctor__profile__user__username', 'description')
-    list_filter = ('date',)
-    fieldsets = (
-        (None, {
-            'fields': ('patient', 'doctor', 'description', 'prescribed_treatment')
-        }),
-    )
-
-    formfield_overrides = {
-        models.TextField: {'widget': CKEditorWidget()},
-    }
-
-@admin.register(FirstAid)
-class FirstAidAdmin(admin.ModelAdmin):
-    list_display = ('title', 'description', 'source')
-    search_fields = ('title', 'description')
-    fieldsets = (
-        (None, {
-            'fields': ('title', 'description', 'source')
-        }),
-    )
-
-    formfield_overrides = {
-        models.TextField: {'widget': CKEditorWidget()},
-    }

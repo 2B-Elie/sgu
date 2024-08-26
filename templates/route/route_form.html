@@ -1,0 +1,28 @@
+{% extends "user/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block navbar-header %}
+<h2 class="header">Dispositif de Gestion des Urgences -SGU-</h2>
+{% endblock navbar-header %}
+
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="card card-stats card-round">
+      <div class="card-body">
+        <div class="row align-items-center">
+            <h2>{% if object %}Mettre à jour la Route{% else %}Créer une Route{% endif %}</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.media }}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary d-inline-block">Sauvegarder</button>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

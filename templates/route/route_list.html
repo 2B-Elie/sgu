@@ -1,0 +1,35 @@
+{% extends "user/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block navbar-header %}
+<h2 class="header">Dispositif de Gestion des Urgences -SGU-</h2>
+{% endblock navbar-header %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="card card-stats card-round">
+      <div class="card-body">
+        <div class="row align-items-center mb-4 p-4">
+          <h2>Liste des Routes</h2>
+          {% if routes %}
+          <ul>
+              {% for route in routes %}
+              <li>
+                  <a href="{% url 'route_detail' route.pk %}">{{ route.title }}</a>
+              </li>
+              {% endfor %}
+          </ul>
+          {% else %}
+          <h1 class="text-center">Aucune route disponible pour le moment</h1>
+          {% endif %}
+          {% if is_medecin %}
+          <a href="{% url 'route_create' %}" class="btn btn-primary d-inline-block">Ajouter une nouvelle Route</a>
+          {% endif %}      
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,91 +1,133 @@
 from django import forms
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
-from ckeditor.widgets import CKEditorWidget
-from .models import Patient, Doctor, Diagnosis, FirstAid, Profile
-from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-
-User = get_user_model()
+from django.contrib.auth.models import User
+from .models import Medecin, Patient, Route, Domicile
+from ckeditor.widgets import CKEditorWidget
 
 class SignUpForm(UserCreationForm):
-    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
-    user_type = forms.ChoiceField(choices=[('patient', 'Patient'), ('doctor', 'Médecin')], label='Je suis un(e)')
+    first_name = forms.CharField(
+        max_length=30,
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Prénom'})
+    )
+    last_name = forms.CharField(
+        max_length=30,
+        required=True,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom'})
+    )
+    email = forms.EmailField(
+        required=True, 
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Adresse email'})
+    )
+    ROLE_CHOICES = [
+        ('medecin', 'Médecin'),
+        ('patient', 'Patient'),
+    ]
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        widget=forms.RadioSelect(attrs={'class': 'form-check-input'}),
+        label="Rôle"
+    )
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2')
+        fields = ['first_name', 'last_name', 'username', 'email', 'password1', 'password2', 'role']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom d’utilisateur'}),
+            'password1': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mot de passe'}),
+            'password2': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirmer le mot de passe'}),
+        }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'S\'inscrire'))
+class MedecinProfileForm(forms.ModelForm):
+    class Meta:
+        model = Medecin
+        fields = ['specialty', 'hospital_affiliation', 'license_number', 'contact_number']
+        widgets = {
+            'specialty': CKEditorWidget(attrs={'class': 'form-control', 'placeholder': 'Spécialité'}),
+            'hospital_affiliation': CKEditorWidget(attrs={'class': 'form-control', 'placeholder': 'Affiliation Hospitalière'}),
+            'license_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Numéro de Licence'}),
+            'contact_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Numéro de Contact'}),
+        }
 
-    def save(self, commit=True):
-        user = super().save(commit=False)
-        user_type = self.cleaned_data.get('user_type')
-        if commit:
-            user.save()
-            Profile.objects.create(user=user, user_type=user_type)
-        return user
+class PatientProfileForm(forms.ModelForm):
+    class Meta:
+        model = Patient
+        fields = ['birth_date', 'medical_history', 'emergency_contact_name', 'emergency_contact_phone', 'chronic_conditions']
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'class': 'form-control', 'placeholder': 'Date de Naissance', 'type': 'date'}),
+            'medical_history': CKEditorWidget(attrs={'class': 'form-control', 'placeholder': 'Historique Médical'}),
+            'emergency_contact_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom du Contact d\'Urgence'}),
+            'emergency_contact_phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Numéro du Contact d\'Urgence'}),
+            'chronic_conditions': CKEditorWidget(attrs={'class': 'form-control', 'placeholder': 'Conditions Chroniques'}),
+        }
 
-class PatientForm(forms.ModelForm):
-    medical_history = forms.CharField(widget=CKEditorWidget(), required=False)
+class CustomLoginForm(AuthenticationForm):
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom d’utilisateur'}),
+        label="Nom d’utilisateur",
+        max_length=254
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mot de passe'}),
+        label="Mot de passe"
+    )
+
+class RouteForm(forms.ModelForm):
+    class Meta:
+        model = Route
+        fields = ['title', 'description', 'steps']
+        widgets = {
+            'description': CKEditorWidget(),
+            'steps': CKEditorWidget(),
+        }
+        labels = {
+            'title': "Titre",
+            'description': "Description",
+            'steps': "Étapes",
+        }
+        help_texts = {
+            'title': "Titre de la route de premiers secours.",
+            'description': "Description détaillée de la route de premiers secours.",
+            'steps': "Étapes à suivre pour fournir les premiers secours.",
+        }
+
+class DomicileForm(forms.ModelForm):
+    class Meta:
+        model = Domicile
+        fields = ['symptom', 'explanation', 'assistance_method']
+        widgets = {
+            'explanation': CKEditorWidget(),
+            'assistance_method': CKEditorWidget(),
+        }
+        labels = {
+            'symptom': "Symptôme",
+            'explanation': "Explication",
+            'assistance_method': "Méthode d'assistance",
+        }
+        help_texts = {
+            'symptom': "Symptôme observé qui nécessite une assistance à domicile.",
+            'explanation': "Explication du symptôme et des raisons possibles.",
+            'assistance_method': "Méthode ou procédure pour assister la personne à domicile.",
+        }
+
+class PatientUpdateForm(forms.ModelForm):
+    medical_history = forms.CharField(
+        widget=CKEditorWidget(attrs={'class': 'form-control', 'placeholder': 'Historique Médical'}),
+        label="Historique Médical",
+        required=False
+    )
+    chronic_conditions = forms.CharField(
+        widget=CKEditorWidget(attrs={'class': 'form-control', 'placeholder': 'Conditions Chroniques'}),
+        label="Conditions Chroniques",
+        required=False
+    )
 
     class Meta:
         model = Patient
-        fields = ['date_of_birth', 'emergency_contact', 'medical_history']
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Enregistrer'))
-
-class DoctorForm(forms.ModelForm):
-    class Meta:
-        model = Doctor
-        fields = ['profile', 'specialty']
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Assurez-vous que le profil doit être un utilisateur de type 'doctor'
-        self.fields['profile'].queryset = Profile.objects.filter(user_type='doctor')
-
-class DiagnosisForm(forms.ModelForm):
-    description = forms.CharField(widget=CKEditorWidget())
-    prescribed_treatment = forms.CharField(widget=CKEditorWidget())
-
-    class Meta:
-        model = Diagnosis
-        fields = ['patient', 'doctor', 'description', 'prescribed_treatment']
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Enregistrer'))
-
-class FirstAidForm(forms.ModelForm):
-    description = forms.CharField(widget=CKEditorWidget())
-
-    class Meta:
-        model = FirstAid
-        fields = ['title', 'description', 'source']
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Enregistrer'))
-
-class SignInForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Se connecter'))
+        fields = ['medical_history', 'chronic_conditions']
+class PatientSearchForm(forms.Form):
+    search = forms.CharField(
+        max_length=100,
+        required=False,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Rechercher par nom'})
+    )

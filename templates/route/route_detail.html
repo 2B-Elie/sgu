@@ -1,0 +1,44 @@
+{% extends "user/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block navbar-header %}
+<h2 class="header">Dispositif de Gestion des Urgences -SGU-</h2>
+{% endblock navbar-header %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="card card-stats card-round">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-12">
+            <!-- Affichage du titre de la route avec style -->
+            <h2 class="text-primary">{{ route.title }}</h2>
+
+            <!-- Description stylisée avec paragraphes et texte gras pour le titre -->
+            <div class="mb-3">
+              <p class="h5 font-weight-bold">Description :</p>
+              <p>{{ route.description|safe }}</p>
+            </div>
+
+            <!-- Étapes stylisées -->
+            <div class="mb-3">
+              <p class="h5 font-weight-bold">Étapes :</p>
+              <p>{{ route.steps|safe }}</p>
+            </div>
+
+            <!-- Liens pour modifier ou retourner à la liste -->
+            <div class="d-flex justify-content-between">
+            {% if is_medecin %}
+              <a href="{% url 'route_update' route.pk %}" class="btn btn-primary">Modifier</a>
+            {% endif %}
+              <a href="{% url 'route_list' %}" class="btn btn-secondary">Retour à la liste</a>        
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

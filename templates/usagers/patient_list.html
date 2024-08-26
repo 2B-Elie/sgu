@@ -1,0 +1,72 @@
+{% extends "user/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block navbar-header %}
+<h2 class="header">Liste des Patients</h2>
+{% endblock navbar-header %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="card card-stats card-round mb-3 p-4">
+      <div class="card-body">
+        <!-- Formulaire de Recherche -->
+        <form method="get" class="mb-4">
+          <div class="row">
+            <div class="col-md-8">
+              <input type="text" name="search" class="form-control" placeholder="Rechercher par nom" value="{{ request.GET.search }}">
+            </div>
+            <div class="col-md-4">
+              <button type="submit" class="btn btn-primary">Rechercher</button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Tableau des Patients -->
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Nom complet</th>
+              <th>Date de Naissance</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for patient in patients %}
+            <tr>
+              <td>{{ patient.user.get_full_name }}</td>
+              <td>{{ patient.birth_date }}</td>
+              <td><a href="{% url 'patient_detail' patient.pk %}" class="btn btn-info">Détails</a></td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3">Aucun patient trouvé.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <span class="step-links">
+            {% if page_obj.has_previous %}
+              <a href="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}page=1">Première</a>
+              <a href="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}page={{ page_obj.previous_page_number }}">Précédente</a>
+            {% endif %}
+
+            <span class="current">
+              Page {{ page_obj.number }} sur {{ page_obj.paginator.num_pages }}.
+            </span>
+
+            {% if page_obj.has_next %}
+              <a href="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}page={{ page_obj.next_page_number }}">Suivante</a>
+              <a href="?{% if request.GET.search %}search={{ request.GET.search }}&{% endif %}page={{ page_obj.paginator.num_pages }}">Dernière</a>
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

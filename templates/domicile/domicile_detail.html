@@ -1,0 +1,35 @@
+{% extends "user/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block navbar-header %}
+<h2 class="header">Dispositif de Gestion des Urgences -SGU-</h2>
+{% endblock navbar-header %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="card card-stats card-round">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <div class="col-12">
+            <h2>{{ domicile.symptom }}</h2>
+            <div class="mb-4">
+              <strong>Explication :</strong>
+              <div class="content">{{ domicile.explanation|safe }}</div>
+            </div>
+            <div class="mb-4">
+              <strong>Méthode d'assistance :</strong>
+              <div class="content">{{ domicile.assistance_method|safe }}</div>
+            </div>
+            {% if is_medecin %}
+            <a href="{% url 'domicile_update' domicile.pk %}" class="btn btn-primary">Modifier</a>
+            {% endif %} 
+            <a href="{% url 'domicile_list' %}" class="btn btn-secondary">Retour à la liste</a>       
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,44 @@
+{% extends "user/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block navbar-header %}
+<h2 class="header">Dispositif de Gestion des Urgences -SGU-</h2>
+{% endblock navbar-header %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="card card-stats card-round mb-3 p-4">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card bg-light"> <!-- Carte avec fond gris -->
+              <div class="card-body">
+                <h2>Informations médicales</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.media }}
+                    {{ form|crispy }}
+                    <button type="submit" class="btn btn-primary d-inline-block">Enregistrer les modifications</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4 text-end">
+            <div class="card bg-light"> <!-- Carte avec fond gris -->
+              <div class="card-body">
+                <h2>Autres Informations</h2>
+                <br><br>
+                <h3><strong>Nom complet :</strong> {{ full_name }}</h3>
+                <h3><strong>Nom du Contact d'Urgence :</strong> {{ emergency_contact_name }}</h3>
+                <h3><strong>Numéro du Contact d'Urgence :</strong> {{ emergency_contact_phone }}</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

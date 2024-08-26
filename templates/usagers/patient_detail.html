@@ -1,0 +1,36 @@
+{% extends "user/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block navbar-header %}
+<h2 class="header">Détails du Patient</h2>
+{% endblock navbar-header %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="card card-stats card-round mb-3 p-4">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-8">
+            <h3>Nom complet : {{ patient.user.username }}</h3>
+            <p><strong>Date de Naissance :</strong> {{ patient.birth_date }}</p>
+            <p><strong>Historique Médical :</strong> {{ patient.medical_history|safe }}</p>
+            <p><strong>Conditions Chroniques :</strong> {{ patient.chronic_conditions|safe }}</p>
+            <p><strong>Nom du Contact d'Urgence :</strong> {{ patient.emergency_contact_name }}</p>
+            <p><strong>Numéro du Contact d'Urgence :</strong> {{ patient.emergency_contact_phone }}</p>
+          </div>
+          <div class="col-md-4 text-end">
+            <h2>Autres Informations</h2>
+            <br><br>
+            <h3><strong>Nom complet :</strong> {{ patient.user.username }}</h3>
+            <h3><strong>Nom du Contact d'Urgence :</strong> {{ patient.emergency_contact_name }}</h3>
+            <h3><strong>Numéro du Contact d'Urgence :</strong> {{ patient.emergency_contact_phone }}</h3>
+          </div>
+        </div>
+        <a href="{% url 'patient_list' %}" class="btn btn-primary">Retour à la liste</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
