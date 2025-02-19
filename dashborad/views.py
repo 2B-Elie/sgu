@@ -299,3 +299,28 @@ class PatientDetailView(DetailView):
 
 class PavillonView(TemplateView):
     template_name = 'pavillon/pavillon.html'
+
+
+from django.shortcuts import render, redirect
+from .forms import PatientAdmissionForm, MedecinAdmissionForm
+from .models import Patient, Medecin
+
+def patient_admission(request):
+    if request.method == 'POST':
+        patient_form = PatientAdmissionForm(request.POST)
+        medecin_form = MedecinAdmissionForm(request.POST)
+        if patient_form.is_valid() and medecin_form.is_valid():
+            patient = patient_form.save()
+            medecin = medecin_form.save()
+            return redirect('success_page')  # Redirigez vers une page de succès
+    else:
+        patient_form = PatientAdmissionForm()
+        medecin_form = MedecinAdmissionForm()
+    
+    return render(request, 'pavillon/patient_admission.html', {
+        'patient_form': patient_form,
+        'medecin_form': medecin_form,
+    })
+
+class SuccessPage(TemplateView):
+    template_name = 'pavillon/success_page.html'

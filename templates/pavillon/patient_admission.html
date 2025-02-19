@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire de Prise en Charge du Patient</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+        .form-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
+        }
+        .form-title {
+            color: #007bff;
+            font-weight: bold;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .form-section {
+            margin-bottom: 20px;
+        }
+        .form-section h3 {
+            color: #007bff;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+        }
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="form-container">
+                    <h1 class="form-title">FORMULAIRE DE PRISE EN CHARGE DU PATIENT</h1>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-section">
+                            <h3>Informations du Patient</h3>
+                            <div class="form-group">
+                                <label for="id_user">Utilisateur</label>
+                                {{ patient_form.user }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_birth_date">Date de Naissance</label>
+                                {{ patient_form.birth_date }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_medical_history">Historique Médical</label>
+                                {{ patient_form.medical_history }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_emergency_contact_name">Contact d'Urgence (Nom)</label>
+                                {{ patient_form.emergency_contact_name }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_emergency_contact_phone">Contact d'Urgence (Téléphone)</label>
+                                {{ patient_form.emergency_contact_phone }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_chronic_conditions">Conditions Chroniques</label>
+                                {{ patient_form.chronic_conditions }}
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3>Informations du Médecin</h3>
+                            <div class="form-group">
+                                <label for="id_user">Utilisateur</label>
+                                {{ medecin_form.user }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_specialty">Spécialité</label>
+                                {{ medecin_form.specialty }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_hospital_affiliation">Affiliation Hospitalière</label>
+                                {{ medecin_form.hospital_affiliation }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_license_number">Numéro de Licence</label>
+                                {{ medecin_form.license_number }}
+                            </div>
+                            <div class="form-group">
+                                <label for="id_contact_number">Numéro de Contact</label>
+                                {{ medecin_form.contact_number }}
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Soumettre</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -6,12 +6,97 @@
 {% endblock navbar-header %}
 
 {% block content %}
+<script src="https://cdn.tailwindcss.com"></script>
 <div class="row">
   <div class="col-sm-12 col-md-12">
     <div class="card card-stats card-round mb-3 p-4">
       <div class="card-body">
-        <h2 class="text-center">Fonctionnalité en cours de développement</h2>
-        <p class="text-center">Nous travaillons actuellement sur cette fonctionnalité. Merci de votre patience.</p>
+        <body class="bg-gray-100 p-4">
+            <div class="w-full bg-white p-6 shadow-md">
+                <h1 class="text-center text-xl font-bold mb-4">FORMULAIRE PRISE EN CHARGE PATIENT</h1>
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label class="block font-bold">Adresse:</label>
+                        <input type="text" class="w-full border border-gray-300 p-2">
+                    </div>
+                    <div>
+                        <label class="block font-bold">Nom du Patient:</label>
+                        <input type="text" class="w-full border border-gray-300 p-2">
+                    </div>
+                    <div>
+                        <label class="block font-bold">Date d'Admission:</label>
+                        <input type="date" class="w-full border border-gray-300 p-2">
+                    </div>
+                    <div>
+                        <label class="block font-bold">Téléphone:</label>
+                        <input type="text" class="w-full border border-gray-300 p-2">
+                    </div>
+                    <div>
+                        <label class="block font-bold">Nom du Médecin:</label>
+                        <input type="text" class="w-full border border-gray-300 p-2">
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-4 mb-4">
+                    <div>
+                        <label class="block font-bold">Motif de l'Admission:</label>
+                        <textarea class="w-full border border-gray-300 p-2 h-24"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-bold">Diagnostic à l'Admission:</label>
+                        <textarea class="w-full border border-gray-300 p-2 h-24"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-bold">Traitement:</label>
+                        <textarea class="w-full border border-gray-300 p-2 h-24"></textarea>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <h2 class="font-bold bg-gray-200 p-2">Coordonnées du Patient</h2>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div>
+                            <label class="block font-bold">Adresse:</label>
+                            <input type="text" class="w-full border border-gray-300 p-2">
+                        </div>
+                        <div>
+                            <label class="block font-bold">Téléphone:</label>
+                            <input type="text" class="w-full border border-gray-300 p-2">
+                        </div>
+                        <div>
+                            <label class="block font-bold">Messagerie Électronique:</label>
+                            <input type="email" class="w-full border border-gray-300 p-2">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="font-bold bg-gray-200 p-2">Médicament</h2>
+                    <div class="grid grid-cols-6 gap-4">
+                        <div>
+                            <label class="block font-bold">Médicament:</label>
+                            <input type="text" class="w-full border border-gray-300 p-2">
+                        </div>
+                        <div>
+                            <label class="block font-bold">Dosage:</label>
+                            <input type="text" class="w-full border border-gray-300 p-2">
+                        </div>
+                        <div>
+                            <label class="block font-bold">Quantité:</label>
+                            <input type="text" class="w-full border border-gray-300 p-2">
+                        </div>
+                        <div>
+                            <label class="block font-bold">Fréquence:</label>
+                            <input type="text" class="w-full border border-gray-300 p-2">
+                        </div>
+                        <div>
+                            <label class="block font-bold">Date de Fin:</label>
+                            <input type="date" class="w-full border border-gray-300 p-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 text-center">
+                    <button class="bg-blue-500 text-white font-bold py-2 px-4 rounded">Enregistrer</button>
+                </div>
+            </div>
+        </body>
       </div>
     </div>
   </div>

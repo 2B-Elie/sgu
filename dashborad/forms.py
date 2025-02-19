@@ -131,3 +131,13 @@ class PatientSearchForm(forms.Form):
         required=False,
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Rechercher par nom'})
     )
+
+class PatientAdmissionForm(forms.ModelForm):
+    class Meta:
+        model = Patient
+        fields = ['user', 'birth_date', 'medical_history', 'emergency_contact_name', 'emergency_contact_phone', 'chronic_conditions']
+
+class MedecinAdmissionForm(forms.ModelForm):
+    class Meta:
+        model = Medecin
+        fields = ['user', 'specialty', 'hospital_affiliation', 'license_number', 'contact_number']

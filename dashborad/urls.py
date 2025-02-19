@@ -9,7 +9,7 @@ from .views import (
     RouteCreateView, RouteUpdateView, RouteDetailView, RouteListView, 
     DomicileCreateView, DomicileUpdateView, DomicileDetailView, 
     DomicileListView, update_patient_profile,PatientListView, PatientDetailView,
-    PavillonView,
+    PavillonView, patient_admission, SuccessPage
     )
 
 
@@ -46,4 +46,6 @@ urlpatterns = [
 
     # Urls pour Pavillon
     path('pavillon/', PavillonView.as_view(), name='pavillon'),
+    path('admission/', patient_admission, name='patient_admission'),
+    path('success/', SuccessPage.as_view(), name='success_page'),
 ]
