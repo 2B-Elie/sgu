@@ -29,9 +29,9 @@ SECRET_KEY = config('SECRET_KEY')
 
 DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*','34.72.124.62']
+ALLOWED_HOSTS = ['*','34.72.124.62','dgu.sorasoft.tech','www.dgu.sorasoft.tech']
 
-CSRF_TRUSTED_ORIGINS = ['https://heptou.com','https://www.heptou.com']
+CSRF_TRUSTED_ORIGINS = ['https://dgu.sorasoft.tech','https://www.dgu.sorasoft.tech']
 
 
 # Application definition
