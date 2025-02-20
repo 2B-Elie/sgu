@@ -324,3 +324,7 @@ def patient_admission(request):
 
 class SuccessPage(TemplateView):
     template_name = 'pavillon/success_page.html'
+
+
+class UsagersView(TemplateView):
+    template_name = 'usagers/usagers.html'    

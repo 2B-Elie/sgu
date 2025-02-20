@@ -1,0 +1,135 @@
+{% extends "user/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block navbar-header %}
+<h2 class="header">Dispositif de Gestion des Urgences -SGU-</h2>
+{% endblock navbar-header %}
+
+{% block content %}
+<div class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="card card-stats card-round">
+      <div class="card-body">
+        <div class="row align-items-center mb-4 p-4">
+          <h1>Chat Assistant</h1>
+          <div class="chat-container">
+            <input type="text" id="userInput" class="chat-input" placeholder="Posez votre question ici...">
+            <button onclick="sendMessage()" class="chat-button">Envoyer</button>
+            <div class="chat-response">
+              <strong>Réponse :</strong> <span id="response"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Styles pour le conteneur du chat */
+  .chat-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Styles pour le champ de saisie */
+  .chat-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+  }
+
+  /* Styles pour le bouton */
+  .chat-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .chat-button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Styles pour la zone de réponse */
+  .chat-response {
+    margin-top: 20px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #fff;
+    font-size: 16px;
+    line-height: 1.5;
+  }
+</style>
+
+<script>
+  const apiKey = "sk-9aB7xPqLmN3zT8oVwXyR5JdK6CfGh42MEYU"; // Remplace par ta clé API OpenAI
+  const apiUrl = "https://api.openai.com/v1/chat/completions";
+
+  // Liste de mots-clés liés aux diagnostics médicaux
+  const medicalKeywords = [
+    "symptom", "symptôme", "diagnostic", "maladie", "douleur", "fièvre", "toux", 
+    "maux de tête", "nausée", "vomissement", "fatigue", "infection", "blessure", 
+    "urgence", "médecin", "hôpital", "traitement", "médicament", "allergie", 
+    "cardiaque", "respiratoire", "digestif", "neurologique", "psychologique"
+  ];
+
+  // Vérifie si la question est liée à un diagnostic médical
+  function isMedicalQuestion(input) {
+    const lowerInput = input.toLowerCase();
+    return medicalKeywords.some(keyword => lowerInput.includes(keyword));
+  }
+
+  async function sendMessage() {
+      const userInput = document.getElementById("userInput").value;
+      const responseElement = document.getElementById("response");
+
+      // Vérifie si la question est médicale
+      if (!isMedicalQuestion(userInput)) {
+          responseElement.textContent = "Désolé, je ne peux répondre qu'aux questions liées aux diagnostics médicaux.";
+          return;
+      }
+
+      try {
+          const response = await fetch(apiUrl, {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${apiKey}`
+              },
+              body: JSON.stringify({
+                  model: "gpt-4", // ou "gpt-3.5-turbo" si tu préfères
+                  messages: [{ role: "user", content: userInput }],
+                  max_tokens: 150
+              })
+          });
+
+          if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(`Erreur API : ${errorData.error?.message || "Inconnue"}`);
+          }
+
+          const data = await response.json();
+          const reply = data.choices[0].message.content;
+          responseElement.textContent = reply;
+      } catch (error) {
+          console.error("Erreur :", error);
+          responseElement.textContent = `Une erreur s'est produite : ${error.message}`;
+      }
+  }
+</script>
+{% endblock content %}
